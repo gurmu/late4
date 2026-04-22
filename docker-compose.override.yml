@@ -1,0 +1,99 @@
+# =============================================================================
+# docker-compose.override.yml — LOCAL DEVELOPMENT ONLY
+# =============================================================================
+# Automatically merged with docker-compose.yml when you run:
+#   docker-compose up --build
+#
+# Adds: local image builds, exposed ports, inter-container network,
+#       and health checks.  None of these are sent to Azure App Service —
+#       App Service only reads docker-compose.yml.
+#
+# CERT REQUIREMENT: place your corporate CA cert at certs/keypoint-ssao-CA.crt
+# before running "docker-compose up --build".  The Dockerfiles bake it into
+# the image via update-ca-certificates.  Once built, plain "docker-compose up"
+# (no --build) reuses the cached cert-bearing image.
+# =============================================================================
+
+services:
+
+  ivanti-api:
+    image: local/ivanti-api:latest
+    build:
+      context: .                              # project root so certs/ is reachable
+      dockerfile: src/api/ivanti/Dockerfile
+    container_name: ivanti-api
+    networks:
+      - rdg-net
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+      - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - IVANTI_BASE_URL=${IVANTI_BASE_URL}
+      - IVANTI_API_KEY=${IVANTI_API_KEY}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nice-api:
+    image: local/nice-api:latest
+    build:
+      context: .                              # project root so certs/ is reachable
+      dockerfile: src/api/nice_incontact/Dockerfile
+    container_name: nice-api
+    networks:
+      - rdg-net
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+      - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - BASE_URL=${NICE_BASE_URL}
+      - ACCESS_KEY_ID=${NICE_ACCESS_KEY_ID}
+      - ACCESS_KEY_SECRET=${NICE_ACCESS_KEY_SECRET}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8001/')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  teams-bot:
+    image: local/teams-bot:latest
+    build:
+      context: .                              # project root
+      dockerfile: Dockerfile
+    container_name: teams-bot
+    networks:
+      - rdg-net
+    ports:
+      - "3978:3978"
+    environment:
+      - PORT=3978
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+      - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - IVANTI_API_URL=http://ivanti-api:8000
+      - NICE_API_URL=http://nice-api:8001
+    depends_on:
+      ivanti-api:
+        condition: service_healthy
+      nice-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3978/')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  rdg-net:
+    driver: bridge

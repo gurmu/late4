@@ -1,0 +1,92 @@
+# =============================================================================
+# .dockerignore — applies to ALL docker builds in this project
+# (teams-bot, ivanti-api, nice-api).  Keeps the build context small so that
+# both local "docker-compose up --build" and "az acr build" run quickly.
+# =============================================================================
+
+# Version control
+.git
+.gitignore
+
+# Python runtime artefacts
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyo
+*.pyd
+
+# Virtual environments (never needed inside a container)
+.venv/
+venv/
+env/
+ENV/
+labenv/
+
+# IDE / editor noise
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Notebooks (not needed in any container)
+notebooks/
+
+# Demo UI / Streamlit app (only used locally, not in containers)
+demo_ui/
+demo_app.py
+demo_app.zip
+
+# Markdown docs (not needed at runtime)
+*.md
+
+# Deployment and setup scripts (not needed inside containers)
+deploy-appservice.ps1
+deploy-azure.ps1
+deploy-azure.sh
+create-structure.sh
+scripts/
+docker_
+
+# Duplicate / legacy Dockerfiles at project root
+Dockerfile_ivanti
+Dockerfile_nice
+
+# Compose files (not needed inside containers)
+docker-compose.yml
+docker-compose.override.yml
+
+# Teams manifest (not needed inside containers)
+teams_manifest/
+
+# Logs / OS artefacts
+*.log
+.DS_Store
+Thumbs.db
+
+# Azure config
+.azure/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.wheel
+
+# Test artefacts
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# =============================================================================
+# IMPORTANT — certs/ is NOT excluded here.
+# .gitignore excludes certs/*.crt from source control (for security), but
+# Docker NEEDS the cert file present in the build context so the Dockerfiles
+# can bake it into the image with update-ca-certificates.
+#
+# Before running any build, ensure your corporate CA cert exists at:
+#   certs/keypoint-ssao-CA.crt
+# =============================================================================

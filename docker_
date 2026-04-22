@@ -1,0 +1,5 @@
+docker compose -f docker-compose.yml -f docker-compose.override.yml up --build
+docker compose -f docker-compose.yml -f docker-compose.override.yml up --build --pull=never
+
+docker compose -f docker-compose.yml -f docker-compose.override.yml config
+docker images | findstr /i "local/teams-bot local/ivanti-api local/nice-api"

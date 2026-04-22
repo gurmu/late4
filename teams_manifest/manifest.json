@@ -1,0 +1,43 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.16",
+    "version": "1.0.0",
+    "id": "YOUR-MICROSOFT-APP-ID",
+    "packageName": "com.company.itsmassistant",
+    "developer": {
+        "name": "Peraton RDG",
+        "websiteUrl": "https://www.peraton.com",
+        "privacyUrl": "https://www.peraton.com/privacy",
+        "termsOfUseUrl": "https://www.peraton.com/terms"
+    },
+    "name": {
+        "short": "ITSM Assistant",
+        "full": "ITSM Knowledge Assistant"
+    },
+    "description": {
+        "short": "AI-powered IT support assistant",
+        "full": "Get help with IT support issues and create tickets through an intelligent assistant."
+    },
+    "icons": {
+        "outline": "outline.png",
+        "color": "color.png"
+    },
+    "accentColor": "#FFFFFF",
+    "bots": [
+        {
+            "botId": "YOUR-MICROSOFT-APP-ID",
+            "scopes": [
+                "personal",
+                "team",
+                "groupchat"
+            ],
+            "supportsFiles": false,
+            "isNotificationOnly": false
+        }
+    ],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "validDomains": []
+}

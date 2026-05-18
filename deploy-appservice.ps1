@@ -172,10 +172,10 @@ $composeRaw = $composeRaw -replace '\$\{ACR_LOGIN_SERVER(?::-[^}]*)?\}', $ACR_LO
 $composeRaw = $composeRaw -replace '\$\{IMAGE_TAG(?::-[^}]*)?\}',        $TAG
 $composePath = "scripts/.compose.appservice.yml"
 New-Item -ItemType Directory -Force -Path (Split-Path $composePath) | Out-Null
-# Write UTF-8 WITHOUT BOM — PowerShell's Set-Content -Encoding UTF8 adds a BOM
-# which breaks Azure App Service's YAML parser.
-$absoluteComposePath = [System.IO.Path]::GetFullPath($composePath)
-[System.IO.File]::WriteAllText($absoluteComposePath, $composeRaw, (New-Object System.Text.UTF8Encoding $false))
+# Write as ASCII (no BOM) — the compose file contains only ASCII characters after
+# variable substitution, and ASCII avoids the UTF-8 BOM that PowerShell 5.1 adds
+# when using -Encoding UTF8, which breaks Azure App Service's YAML parser.
+Set-Content -Path $composePath -Value $composeRaw -Encoding ascii
 
 Invoke-Az @("webapp","config","container","set","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--multicontainer-config-type","compose","--multicontainer-config-file",$composePath) | Out-Null
 

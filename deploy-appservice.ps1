@@ -47,7 +47,8 @@ function Load-EnvFile {
         Write-Host "Loading environment variables from $Path..." -ForegroundColor Cyan
         Get-Content $Path | ForEach-Object {
             if ($_ -match '^([^#][^=]+)=(.*)$') {
-                [Environment]::SetEnvironmentVariable($matches[1], $matches[2], "Process")
+                # Set-Item env: is CLM-safe; [Environment]::SetEnvironmentVariable is not.
+                Set-Item -Path "env:$($matches[1])" -Value $matches[2]
             }
         }
     }

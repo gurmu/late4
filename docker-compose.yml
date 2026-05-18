@@ -2,6 +2,12 @@
 # Removed: ports, networks, restart  — App Service ignores / does not support them.
 # App Service routes external traffic to teams-bot via WEBSITES_PORT=3978.
 # Internal traffic uses service-name DNS: http://ivanti-api:8000, http://nice-api:8001.
+#
+# NOTE: ${ACR_LOGIN_SERVER} and ${IMAGE_TAG:-latest} are substituted by
+# deploy-appservice.ps1 BEFORE this file is uploaded to App Service.
+# NEVER upload this raw file manually — always use the deploy script.
+
+version: "3"
 
 services:
   teams-bot:

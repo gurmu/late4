@@ -1,6 +1,18 @@
 # ============================================================================
 # RDG Chat — Azure App Service Multi-Container Deployment (GCC)
+#
+# USAGE:
+#   .\deploy-appservice.ps1               # build images AND deploy
+#   .\deploy-appservice.ps1 -SkipBuild    # deploy only (images already in ACR)
+#
+# Use -SkipBuild when:
+#   - You built images off-VPN with build-acr.ps1 or az acr build manually
+#   - You are on VPN (Zscaler blocks the blob-storage upload inside az acr build)
+#   - You just want to re-deploy / update app settings without rebuilding
 # ============================================================================
+param(
+    [switch]$SkipBuild
+)
 
 # Use Continue so that az CLI stderr warnings (Zscaler/urllib3) never crash
 # the script.  Critical failures are caught explicitly via $LASTEXITCODE.
@@ -60,7 +72,9 @@ $ACR_NAME         = if ($env:ACR_NAME)           { $env:ACR_NAME }           els
 $APP_SERVICE_PLAN = if ($env:APP_SERVICE_PLAN)   { $env:APP_SERVICE_PLAN }   else { "asp-itsm-multiagent" }
 $WEBAPP_NAME      = if ($env:WEBAPP_NAME)        { $env:WEBAPP_NAME }        else { "" }
 $APP_SERVICE_SKU  = if ($env:APP_SERVICE_SKU)    { $env:APP_SERVICE_SKU }    else { "P1v3" }
-$TAG = Get-Date -Format "yyyyMMddHHmmss"
+# When skipping the build, use "latest" — the images already in ACR are tagged latest.
+# When building, stamp a unique datetime tag so rollbacks are easy.
+$TAG = if ($SkipBuild) { "latest" } else { Get-Date -Format "yyyyMMddHHmmss" }
 
 if (-not $WEBAPP_NAME) {
     Write-Host "ERROR: WEBAPP_NAME is required in .env" -ForegroundColor Red
@@ -90,25 +104,31 @@ $ACR_ID           = (Invoke-Az @("acr","show","--name",$ACR_NAME,"--query","id",
 Write-Host "ACR login server : $ACR_LOGIN_SERVER" -ForegroundColor Green
 
 # ---- Build & push via ACR Tasks (az acr build) ----------------------------
-# This builds the image INSIDE Azure — no local Docker push to ACR needed,
-# which completely sidesteps the Zscaler CONNECTIVITY_SSL_ERROR you were hitting
-# with 'docker push'.  The build context is uploaded via Azure CLI (which
-# already has AZURE_CLI_DISABLE_CONNECTION_VERIFICATION set).
-Write-Host "Building images via ACR Tasks (no local docker push required)..." -ForegroundColor Cyan
+if ($SkipBuild) {
+    Write-Host "Skipping image build (-SkipBuild specified)." -ForegroundColor Yellow
+    Write-Host "Using images already in ACR:" -ForegroundColor Yellow
+    Write-Host "  $ACR_LOGIN_SERVER/ivanti-api:latest"
+    Write-Host "  $ACR_LOGIN_SERVER/nice-api:latest"
+    Write-Host "  $ACR_LOGIN_SERVER/teams-bot:latest"
+} else {
+    # Builds inside Azure — no local docker push needed, sidesteps Zscaler.
+    # Requires off-VPN or DNS access to *.blob.core.usgovcloudapi.net.
+    Write-Host "Building images via ACR Tasks (no local docker push required)..." -ForegroundColor Cyan
 
-Write-Host "  Building ivanti-api..." -ForegroundColor Cyan
-Invoke-Az @("acr","build","--registry",$ACR_NAME,"--image","ivanti-api:${TAG}","--image","ivanti-api:latest","-f","src/api/ivanti/Dockerfile",".")
+    Write-Host "  Building ivanti-api..." -ForegroundColor Cyan
+    Invoke-Az @("acr","build","--registry",$ACR_NAME,"--image","ivanti-api:${TAG}","--image","ivanti-api:latest","-f","src/api/ivanti/Dockerfile",".")
 
-Write-Host "  Building nice-api..." -ForegroundColor Cyan
-Invoke-Az @("acr","build","--registry",$ACR_NAME,"--image","nice-api:${TAG}","--image","nice-api:latest","-f","src/api/nice_incontact/Dockerfile",".")
+    Write-Host "  Building nice-api..." -ForegroundColor Cyan
+    Invoke-Az @("acr","build","--registry",$ACR_NAME,"--image","nice-api:${TAG}","--image","nice-api:latest","-f","src/api/nice_incontact/Dockerfile",".")
 
-Write-Host "  Building teams-bot..." -ForegroundColor Cyan
-Invoke-Az @("acr","build","--registry",$ACR_NAME,"--image","teams-bot:${TAG}","--image","teams-bot:latest","-f","Dockerfile",".")
+    Write-Host "  Building teams-bot..." -ForegroundColor Cyan
+    Invoke-Az @("acr","build","--registry",$ACR_NAME,"--image","teams-bot:${TAG}","--image","teams-bot:latest","-f","Dockerfile",".")
 
-Write-Host "Images built and pushed to ACR:" -ForegroundColor Green
-Write-Host "  $ACR_LOGIN_SERVER/teams-bot:$TAG"
-Write-Host "  $ACR_LOGIN_SERVER/ivanti-api:$TAG"
-Write-Host "  $ACR_LOGIN_SERVER/nice-api:$TAG"
+    Write-Host "Images built and pushed to ACR:" -ForegroundColor Green
+    Write-Host "  $ACR_LOGIN_SERVER/teams-bot:$TAG"
+    Write-Host "  $ACR_LOGIN_SERVER/ivanti-api:$TAG"
+    Write-Host "  $ACR_LOGIN_SERVER/nice-api:$TAG"
+}
 
 # ---- App Service Plan (in the app's resource group) -----------------------
 Write-Host "Checking App Service Plan $APP_SERVICE_PLAN..." -ForegroundColor Cyan
@@ -123,7 +143,7 @@ Write-Host "Checking Web App $WEBAPP_NAME..." -ForegroundColor Cyan
 $webExists = Invoke-AzQuery @("webapp","show","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--query","name","-o","tsv")
 if (-not $webExists) {
     Write-Host "  Creating Web App..." -ForegroundColor Cyan
-    Invoke-Az @("webapp","create","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--plan",$APP_SERVICE_PLAN,"--deployment-container-image-name","mcr.microsoft.com/azure-app-service/samples/aspnethelloworld:latest") | Out-Null
+    Invoke-Az @("webapp","create","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--plan",$APP_SERVICE_PLAN,"--deployment-container-image-name","${ACR_LOGIN_SERVER}/teams-bot:latest") | Out-Null
 }
 
 # ---- ACR pull credentials --------------------------------------------------
@@ -152,7 +172,10 @@ $composeRaw = $composeRaw -replace '\$\{ACR_LOGIN_SERVER(?::-[^}]*)?\}', $ACR_LO
 $composeRaw = $composeRaw -replace '\$\{IMAGE_TAG(?::-[^}]*)?\}',        $TAG
 $composePath = "scripts/.compose.appservice.yml"
 New-Item -ItemType Directory -Force -Path (Split-Path $composePath) | Out-Null
-$composeRaw | Set-Content -Encoding UTF8 $composePath
+# Write UTF-8 WITHOUT BOM — PowerShell's Set-Content -Encoding UTF8 adds a BOM
+# which breaks Azure App Service's YAML parser.
+$absoluteComposePath = [System.IO.Path]::GetFullPath($composePath)
+[System.IO.File]::WriteAllText($absoluteComposePath, $composeRaw, (New-Object System.Text.UTF8Encoding $false))
 
 Invoke-Az @("webapp","config","container","set","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--multicontainer-config-type","compose","--multicontainer-config-file",$composePath) | Out-Null
 
@@ -191,7 +214,10 @@ $settings = @(
     "NICE_ACCESS_KEY_ID=$env:NICE_ACCESS_KEY_ID",
     "NICE_ACCESS_KEY_SECRET=$env:NICE_ACCESS_KEY_SECRET",
     "AZURE_VISION_ENDPOINT=$env:AZURE_VISION_ENDPOINT",
-    "AZURE_VISION_KEY=$env:AZURE_VISION_KEY"
+    "AZURE_VISION_KEY=$env:AZURE_VISION_KEY",
+    "AZURE_STORAGE_ACCOUNT_NAME=$env:AZURE_STORAGE_ACCOUNT_NAME",
+    "AZURE_STORAGE_ACCOUNT_KEY=$env:AZURE_STORAGE_ACCOUNT_KEY",
+    "AZURE_STORAGE_SAS_EXPIRY_HOURS=$env:AZURE_STORAGE_SAS_EXPIRY_HOURS"
 )
 
 Invoke-Az (@("webapp","config","appsettings","set","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--settings") + $settings) | Out-Null

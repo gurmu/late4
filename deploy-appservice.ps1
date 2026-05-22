@@ -9,6 +9,9 @@
 #   - You built images off-VPN with build-acr.ps1 or az acr build manually
 #   - You are on VPN (Zscaler blocks the blob-storage upload inside az acr build)
 #   - You just want to re-deploy / update app settings without rebuilding
+#
+# CLM NOTE: All [System.xxx] .NET calls have been removed so this script runs
+# under PowerShell Constrained Language Mode (corporate policy).
 # ============================================================================
 param(
     [switch]$SkipBuild
@@ -41,13 +44,18 @@ function Invoke-AzQuery {
     return ($output | Out-String).Trim()
 }
 
+# ---------------------------------------------------------------------------
+# CLM-safe env loader: uses Set-Item env: (no [Environment]::SetEnvironmentVariable)
+# ---------------------------------------------------------------------------
 function Load-EnvFile {
     param([string]$Path = ".env")
     if (Test-Path $Path) {
         Write-Host "Loading environment variables from $Path..." -ForegroundColor Cyan
         Get-Content $Path | ForEach-Object {
-            if ($_ -match '^([^#][^=]+)=(.*)$') {
-                [Environment]::SetEnvironmentVariable($matches[1], $matches[2], "Process")
+            if ($_ -match '^([^#=][^=]*)=(.*)$') {
+                $varName  = $matches[1].Trim()
+                $varValue = $matches[2]
+                Set-Item -Path "env:$varName" -Value $varValue
             }
         }
     }
@@ -167,15 +175,16 @@ if ($USE_ACR_ADMIN -and $USE_ACR_ADMIN.ToLower() -eq "true") {
 # ---- Prepare App Service compatible compose file --------------------------
 # Substitute ${ACR_LOGIN_SERVER} and ${IMAGE_TAG:-latest} with real values.
 # The compose file has already had ports/networks/restart removed.
+#
+# CLM-safe write: Set-Content -Encoding ascii (no BOM, all compose content is
+# ASCII after variable substitution).  [System.IO.File]::WriteAllText and
+# New-Object System.Text.UTF8Encoding are both blocked by CLM.
 $composeRaw = Get-Content docker-compose.yml -Raw
 $composeRaw = $composeRaw -replace '\$\{ACR_LOGIN_SERVER(?::-[^}]*)?\}', $ACR_LOGIN_SERVER
 $composeRaw = $composeRaw -replace '\$\{IMAGE_TAG(?::-[^}]*)?\}',        $TAG
-$composePath = "scripts/.compose.appservice.yml"
-New-Item -ItemType Directory -Force -Path (Split-Path $composePath) | Out-Null
-# Write UTF-8 WITHOUT BOM — PowerShell's Set-Content -Encoding UTF8 adds a BOM
-# which breaks Azure App Service's YAML parser.
-$absoluteComposePath = [System.IO.Path]::GetFullPath($composePath)
-[System.IO.File]::WriteAllText($absoluteComposePath, $composeRaw, (New-Object System.Text.UTF8Encoding $false))
+$composePath = "scripts\.compose.appservice.yml"
+New-Item -ItemType Directory -Force -Path "scripts" | Out-Null
+Set-Content -Path $composePath -Value $composeRaw -Encoding ascii
 
 Invoke-Az @("webapp","config","container","set","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--multicontainer-config-type","compose","--multicontainer-config-file",$composePath) | Out-Null
 

@@ -47,8 +47,7 @@ function Load-EnvFile {
         Write-Host "Loading environment variables from $Path..." -ForegroundColor Cyan
         Get-Content $Path | ForEach-Object {
             if ($_ -match '^([^#][^=]+)=(.*)$') {
-                # Set-Item env: is CLM-safe; [Environment]::SetEnvironmentVariable is not.
-                Set-Item -Path "env:$($matches[1])" -Value $matches[2]
+                [Environment]::SetEnvironmentVariable($matches[1], $matches[2], "Process")
             }
         }
     }
@@ -173,10 +172,10 @@ $composeRaw = $composeRaw -replace '\$\{ACR_LOGIN_SERVER(?::-[^}]*)?\}', $ACR_LO
 $composeRaw = $composeRaw -replace '\$\{IMAGE_TAG(?::-[^}]*)?\}',        $TAG
 $composePath = "scripts/.compose.appservice.yml"
 New-Item -ItemType Directory -Force -Path (Split-Path $composePath) | Out-Null
-# Write as ASCII (no BOM) — the compose file contains only ASCII characters after
-# variable substitution, and ASCII avoids the UTF-8 BOM that PowerShell 5.1 adds
-# when using -Encoding UTF8, which breaks Azure App Service's YAML parser.
-Set-Content -Path $composePath -Value $composeRaw -Encoding ascii
+# Write UTF-8 WITHOUT BOM — PowerShell's Set-Content -Encoding UTF8 adds a BOM
+# which breaks Azure App Service's YAML parser.
+$absoluteComposePath = [System.IO.Path]::GetFullPath($composePath)
+[System.IO.File]::WriteAllText($absoluteComposePath, $composeRaw, (New-Object System.Text.UTF8Encoding $false))
 
 Invoke-Az @("webapp","config","container","set","--name",$WEBAPP_NAME,"--resource-group",$RESOURCE_GROUP,"--multicontainer-config-type","compose","--multicontainer-config-file",$composePath) | Out-Null
 
@@ -207,6 +206,7 @@ $settings = @(
     "MICROSOFT_APP_PASSWORD=$env:MICROSOFT_APP_PASSWORD",
     "BOT_TYPE=$env:BOT_TYPE",
     "APP_MSI_RESOURCE_ID=$env:APP_MSI_RESOURCE_ID",
+    "APP_TENANT_ID=$env:APP_TENANT_ID",
     "BOT_FRAMEWORK_CHANNEL_SERVICE=$env:BOT_FRAMEWORK_CHANNEL_SERVICE",
     "BOT_FRAMEWORK_OAUTH_URL=$env:BOT_FRAMEWORK_OAUTH_URL",
     "IVANTI_BASE_URL=$env:IVANTI_BASE_URL",

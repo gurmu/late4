@@ -29,6 +29,11 @@ BOT_TYPE = os.getenv("BOT_TYPE", "").strip()
 APP_MSI_RESOURCE_ID = os.getenv("APP_MSI_RESOURCE_ID")
 CHANNEL_SERVICE = os.getenv("BOT_FRAMEWORK_CHANNEL_SERVICE")
 OAUTH_URL = os.getenv("BOT_FRAMEWORK_OAUTH_URL")
+# For Single Tenant GCC bots the SDK needs the tenant ID to validate
+# incoming JWTs from the Bot Framework connector service.  Without it
+# the adapter uses multi-tenant validation which rejects Single Tenant
+# GCC-issued tokens and returns 403.
+APP_TENANT_ID = os.getenv("APP_TENANT_ID", "").strip()
 PORT = int(os.getenv("PORT", "3978"))
 
 using_managed_identity = BOT_TYPE.lower() in {
@@ -64,6 +69,18 @@ else:
         sys.exit(1)
 
 SETTINGS = BotFrameworkAdapterSettings(APP_ID, APP_PASSWORD or None)
+
+# Single Tenant GCC: set tenant so the SDK validates incoming Bot Framework
+# JWTs against the correct tenant-specific issuer (not multi-tenant).
+if APP_TENANT_ID:
+    SETTINGS.channel_auth_tenant = APP_TENANT_ID
+    logger.info(f"Bot tenant configured: {APP_TENANT_ID[:8]}...")
+else:
+    logger.warning(
+        "APP_TENANT_ID not set; Single Tenant GCC bots should set this to "
+        "the Azure AD tenant ID (App Tenant ID from the Azure Bot Configuration page)"
+    )
+
 if CHANNEL_SERVICE:
     SETTINGS.channel_service = CHANNEL_SERVICE
 else:

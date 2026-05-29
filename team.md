@@ -96,7 +96,7 @@ $b64 = "IiIiCldlYiBzZXJ2ZXIgZm9yIE1pY3Jvc29mdCBUZWFtcyBCb3QgKEF6dXJlIEdvdmVybm1l
 "c29tZXRoaW5nIHdlbnQgd3JvbmcuIikKCkFEQVBURVIub25fdHVybl9lcnJvciA9IG9uX2Vycm9y" + `
 "CgojIENyZWF0ZSBib3QKQk9UID0gSVRTTVRlYW1zQm90KCkKCgphc3luYyBkZWYgbWVzc2FnZXMo" + `
 "cmVxOiBSZXF1ZXN0KSAtPiBSZXNwb25zZToKICAgICIiIkhhbmRsZSBpbmNvbWluZyBtZXNzYWdl" + `
-"cyBmcm9tIFRlYW1zIiIiCiAgICBsb2dnZXIuaW5mbygiUmVjZWl2ZWQgcmVxdWVzdCB0byAvYXBp" + `
+"cyBmcm9tIFRlYW1zIiiiCiAgICBsb2dnZXIuaW5mbygiUmVjZWl2ZWQgcmVxdWVzdCB0byAvYXBp" + `
 "L21lc3NhZ2VzIikKCiAgICAjIFZlcmlmeSBjb250ZW50IHR5cGUKICAgIGlmICJhcHBsaWNhdGlv" + `
 "bi9qc29uIiBub3QgaW4gcmVxLmhlYWRlcnMuZ2V0KCJDb250ZW50LVR5cGUiLCAiIik6CiAgICAg" + `
 "ICAgbG9nZ2VyLmVycm9yKCJJbnZhbGlkIGNvbnRlbnQgdHlwZSIpCiAgICAgICAgcmV0dXJuIFJl" + `
@@ -128,17 +128,12 @@ $b64 = "IiIiCldlYiBzZXJ2ZXIgZm9yIE1pY3Jvc29mdCBUZWFtcyBCb3QgKEF6dXJlIEdvdmVybm1l
 "Z2VyLmVycm9yKCJGYWlsZWQgdG8gc3RhcnQgc2VydmVyOiAlcyIsIGVycm9yLCBleGNfaW5mbz1U" + `
 "cnVlKQogICAgICAgIHJhaXNlCg=="
 
-Set-Content -Path "$env:TEMP\srv.b64" -Value $b64 -Encoding ascii
+Set-Content -Path "srv_b64.txt" -Value $b64 -Encoding ascii
 
 
+python -c "import base64; open('src/teams_server.py','wb').write(base64.b64decode(open('srv_b64.txt').read().strip()))"
 
-certutil -decode "$env:TEMP\srv.b64" "src\teams_server.py"
-Remove-Item "$env:TEMP\srv.b64" -ErrorAction SilentlyContinue
 
 
 Select-String -Path "src\teams_server.py" -Pattern "TO_CHANNEL_FROM_BOT_LOGIN_URL"
-
-$ACR = "chitsm2"
-az acr build --registry $ACR --image "teams-bot:latest" -f Dockerfile .
-az webapp restart --name rdg-chat --resource-group rg-itsm-multiagent-dev
-
+Remove-Item "srv_b64.txt" -ErrorAction SilentlyContinue

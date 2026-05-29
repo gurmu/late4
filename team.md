@@ -1,139 +1,236 @@
-$b64 = "IiIiCldlYiBzZXJ2ZXIgZm9yIE1pY3Jvc29mdCBUZWFtcyBCb3QgKEF6dXJlIEdvdmVybm1lbnQg" + `
-"LyBHQ0MpCiIiIgoKZnJvbSBhaW9odHRwIGltcG9ydCB3ZWIKZnJvbSBhaW9odHRwLndlYiBpbXBv" + `
-"cnQgUmVxdWVzdCwgUmVzcG9uc2UKZnJvbSBib3RidWlsZGVyLmludGVncmF0aW9uLmFpb2h0dHAg" + `
-"aW1wb3J0IENsb3VkQWRhcHRlciwgQ29uZmlndXJhdGlvbkJvdEZyYW1ld29ya0F1dGhlbnRpY2F0" + `
-"aW9uCmZyb20gYm90YnVpbGRlci5zY2hlbWEgaW1wb3J0IEFjdGl2aXR5CmZyb20gdGVhbXNfYm90" + `
-"IGltcG9ydCBJVFNNVGVhbXNCb3QKaW1wb3J0IG9zCmltcG9ydCBzeXMKZnJvbSBkb3RlbnYgaW1w" + `
-"b3J0IGxvYWRfZG90ZW52CmltcG9ydCBsb2dnaW5nCgojIFNldHVwIGxvZ2dpbmcKbG9nZ2luZy5i" + `
-"YXNpY0NvbmZpZygKICAgIGxldmVsPWxvZ2dpbmcuSU5GTywKICAgIGZvcm1hdD0nJShhc2N0aW1l" + `
-"KXMgLSAlKG5hbWUpcyAtICUobGV2ZWxuYW1lKXMgLSAlKG1lc3NhZ2UpcycKKQpsb2dnZXIgPSBs" + `
-"b2dnaW5nLmdldExvZ2dlcihfX25hbWVfXykKCiMgTG9hZCBlbnZpcm9ubWVudCB2YXJpYWJsZXMK" + `
-"bG9hZF9kb3RlbnYoKQoKIyBCb3QgRnJhbWV3b3JrIHNldHRpbmdzCkFQUF9JRCA9IG9zLmdldGVu" + `
-"digiTUlDUk9TT0ZUX0FQUF9JRCIpCkFQUF9QQVNTV09SRCA9IG9zLmdldGVudigiTUlDUk9TT0ZU" + `
-"X0FQUF9QQVNTV09SRCIpCkJPVF9UWVBFID0gb3MuZ2V0ZW52KCJCT1RfVFlQRSIsICIiKS5zdHJp" + `
-"cCgpCkFQUF9NU0lfUkVTT1VSQ0VfSUQgPSBvcy5nZXRlbnYoIkFQUF9NU0lfUkVTT1VSQ0VfSUQi" + `
-"KQpBUFBfVEVOQU5UX0lEID0gb3MuZ2V0ZW52KCJBUFBfVEVOQU5UX0lEIiwgIiIpLnN0cmlwKCkK" + `
-"UE9SVCA9IGludChvcy5nZXRlbnYoIlBPUlQiLCAiMzk3OCIpKQoKdXNpbmdfbWFuYWdlZF9pZGVu" + `
-"dGl0eSA9IEJPVF9UWVBFLmxvd2VyKCkgaW4gewogICAgInVzZXItYXNzaWduZWQgbWFuYWdlZCBp" + `
-"ZGVudGl0eSIsCiAgICAidXNlcmFzc2lnbmVkbWFuYWdlZGlkZW50aXR5IiwKICAgICJ1c2VyLWFz" + `
-"c2lnbmVkIiwKICAgICJtYW5hZ2VkaWRlbnRpdHkiLAogICAgIm1hbmFnZWQtaWRlbnRpdHkiLAp9" + `
-"CgppZiBub3QgQVBQX0lEOgogICAgbG9nZ2VyLmVycm9yKCJNSUNST1NPRlRfQVBQX0lEIG11c3Qg" + `
-"YmUgc2V0IGluIC5lbnYgZmlsZSIpCiAgICBwcmludCgiXG5FUlJPUjogTWlzc2luZyBUZWFtcyBi" + `
-"b3QgY3JlZGVudGlhbHMhIikKICAgIHByaW50KCJQbGVhc2UgYWRkIHRvIHlvdXIgLmVudiBmaWxl" + `
-"OiIpCiAgICBwcmludCgiTUlDUk9TT0ZUX0FQUF9JRD15b3VyLWFwcC1pZCIpCiAgICBpZiBub3Qg" + `
-"dXNpbmdfbWFuYWdlZF9pZGVudGl0eToKICAgICAgICBwcmludCgiTUlDUk9TT0ZUX0FQUF9QQVNT" + `
-"V09SRD15b3VyLWFwcC1zZWNyZXQiKQogICAgcHJpbnQoIlxuU2VlIFRFQU1TX0RFUExPWU1FTlQu" + `
-"bWQgZm9yIGluc3RydWN0aW9ucyBvbiBnZXR0aW5nIHRoZXNlIGNyZWRlbnRpYWxzLiIpCiAgICBz" + `
-"eXMuZXhpdCgxKQoKbG9nZ2VyLmluZm8oIkJvdCBBcHAgSUQgbG9hZGVkIGZyb20gZW52aXJvbm1l" + `
-"bnQuIikKCmlmIHVzaW5nX21hbmFnZWRfaWRlbnRpdHk6CiAgICBsb2dnZXIuaW5mbygiQm90IHR5" + `
-"cGU6IFVzZXItQXNzaWduZWQgTWFuYWdlZCBJZGVudGl0eSAobm8gYXBwIHBhc3N3b3JkIGV4cGVj" + `
-"dGVkKS4iKQogICAgaWYgQVBQX01TSV9SRVNPVVJDRV9JRDoKICAgICAgICBsb2dnZXIuaW5mbygi" + `
-"QXBwIE1TSSBSZXNvdXJjZSBJRCBjb25maWd1cmVkLiIpCmVsc2U6CiAgICBpZiBub3QgQVBQX1BB" + `
-"U1NXT1JEOgogICAgICAgIGxvZ2dlci5lcnJvcigiTUlDUk9TT0ZUX0FQUF9QQVNTV09SRCBtdXN0" + `
-"IGJlIHNldCBmb3Igbm9uLW1hbmFnZWQgaWRlbnRpdHkgYm90cy4iKQogICAgICAgIHByaW50KCJc" + `
-"bkVSUk9SOiBNaXNzaW5nIFRlYW1zIGJvdCBzZWNyZXQhIikKICAgICAgICBwcmludCgiUGxlYXNl" + `
-"IGFkZCB0byB5b3VyIC5lbnYgZmlsZToiKQogICAgICAgIHByaW50KCJNSUNST1NPRlRfQVBQX1BB" + `
-"U1NXT1JEPXlvdXItYXBwLXNlY3JldCIpCiAgICAgICAgc3lzLmV4aXQoMSkKCmlmIG5vdCBBUFBf" + `
-"VEVOQU5UX0lEOgogICAgbG9nZ2VyLndhcm5pbmcoCiAgICAgICAgIkFQUF9URU5BTlRfSUQgbm90" + `
-"IHNldC4gU2luZ2xlIFRlbmFudCBHQ0MgYm90cyBtdXN0IHNldCB0aGlzICIKICAgICAgICAidG8g" + `
-"dGhlIEF6dXJlIEFEIHRlbmFudCBJRCBzaG93biBpbiBBenVyZSBCb3QgQ29uZmlndXJhdGlvbi4i" + `
-"CiAgICApCmVsc2U6CiAgICBsb2dnZXIuaW5mbygiQm90IHRlbmFudCBJRDogJXMiLCBBUFBfVEVO" + `
-"QU5UX0lEKQoKCiMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t" + `
-"LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBHQ0MgKEF6dXJlIEdvdmVybm1lbnQgLyBTaW5n" + `
-"bGUgVGVuYW50KSBhdXRoZW50aWNhdGlvbiBjb25maWd1cmF0aW9uLgojCiMgQ29uZmlndXJhdGlv" + `
-"bkJvdEZyYW1ld29ya0F1dGhlbnRpY2F0aW9uIHJlYWRzIGEgcGxhaW4gY29uZmlnIG9iamVjdCB3" + `
-"aG9zZQojIGF0dHJpYnV0ZXMgdGVsbCB0aGUgU0RLIHdoaWNoIEdDQyBlbmRwb2ludHMgdG8gdXNl" + `
-"IGZvcjoKIyAgIC0gT3V0Ym91bmQgYm90IGNyZWRlbnRpYWxzICAoVE9fQ0hBTk5FTF9GUk9NX0JP" + `
-"VF8qKQojICAgLSBJbmJvdW5kIHRva2VuIHZhbGlkYXRpb24gIChUT19CT1RfRlJPTV9DSEFOTkVM" + `
-"XyopCiMKIyBDcml0aWNhbCBmb3IgU2luZ2xlIFRlbmFudCBHQ0M6CiMgICBUT19CT1RfRlJPTV9D" + `
-"SEFOWUVMX1RPS0VOX0lTU1VFUiBtdXN0IG1hdGNoIHRoZSBhY3R1YWwgImlzcyIgY2xhaW0gaW4g" + `
-"dGhlCiMgICBKV1QgdGhhdCBUZWFtcyBzZW5kcy4gIEZvciBTaW5nbGUgVGVuYW50IEdDQyAobXNh" + `
-"QXBwVHlwZSA9IFNpbmdsZVRlbmFudCkKIyAgIFRlYW1zIHNpZ25zIHRva2VucyB3aXRoICBodHRw" + `
-"czovL3N0cy53aW5kb3dzLm5ldC97dGVuYW50LWlkfS8KIyAgIE5PVCB3aXRoICBodHRwczovL2Fw" + `
-"aS5ib3RmcmFtZXdvcmsudXMgICh0aGF0IGlzIHRoZSBtdWx0aS10ZW5hbnQgaXNzdWVyKS4KIyAt" + `
-"LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t" + `
-"LS0tLS0tLS0tLS0tLS0KY2xhc3MgX0dDQ0NvbmZpZzoKICAgIEFQUF9JRCA9IEFQUF9JRAogICAg" + `
-"QVBQX1BBU1NXT1JEID0gQVBQX1BBU1NXT1JECiAgICBBUFBfVFlQRSA9ICJTaW5nbGVUZW5hbnQi" + `
-"CiAgICBBUFBfVEVOQU5USUQgPSBBUFBfVEVOQU5UX0lECgogICAgIyBJbmJvdW5kOiB3aGljaCBP" + `
-"cGVuSUQgbWV0YWRhdGEgVVJMIHRvIGZldGNoIHNpZ25pbmcga2V5cyBmcm9tCiAgICBUT19CT1Rf" + `
-"FROM9DSEFOTkVMX09QRU5JRF9NRVRBREFUQV9VUkwgPSAoCiAgICAgICAgImh0dHBzOi8vbG9naW4u" + `
-"Ym90ZnJhbWV3b3JrLmF6dXJlLnVzL3YxLy53ZWxsLWtub3duL29wZW5pZGNvbmZpZ3VyYXRpb24i" + `
-"CiAgICApCgogICAgIyBJbmJvdW5kOiBleHBlY3RlZCB0b2tlbiBpc3N1ZXIgZnJvbSBUZWFtcyBH" + `
-"b3Zlcm5tZW50IChTaW5nbGUgVGVuYW50KQogICAgVE9fQk9UX0ZST01fQ0hBTk5FTF9UT0tFTl9J" + `
-"U1NVRVIgPSAoCiAgICAgICAgImh0dHBzOi8vc3RzLndpbmRvd3MubmV0LyIgKyAoQVBQX1RFTkFO" + `
-"VF9JRCBvciBcIlwiKSArIFwiL1wiCiAgICApCgogICAgIyBJbmJvdW5kOiBlbXVsYXRvciBPcGVu" + `
-"SUQgbWV0YWRhdGEgKEdDQyBlbXVsYXRvciBlbmRwb2ludCkKICAgIFRPX0JPVF9GUk9NX0VNVUZB" + `
-"VE9SX09QRU5JRF9NRVRBREFUQV9VUkwgPSAoCiAgICAgICAgImh0dHBzOi8vbG9naW4ubWljcm9z" + `
-"b2Z0b25saW5lLnVzLyIKICAgICAgICAiY2FiOGEzMWEtMTkwNi00Mjg3LWEwZDgtNGVlZjY2Yjk1" + `
-"ZjZlL3YyLjAvLndlbGwta25vd24vb3BlbmlkLWNvbmZpZ3VyYXRpb24iCiAgICApCgogICAgIyBP" + `
-"dXRib3VuZDogbG9naW4gVVJMIGZvciBib3QtdG8tY2hhbm5lbCBhdXRoIChBenVyZSBHb3Zlcm5t" + `
-"ZW50KS4KICAgICMgU2luZ2xlVGVuYW50IEdDQzogdGhlIGJvdCdzIEFwcCBSZWdpc3RyYXRpb24g" + `
-"bGl2ZXMgaW4gdGhlIGN1c3RvbWVyJ3MKICAgICMgZ292ZXJubWVudCB0ZW5hbnQgKEFQUF9URU5B" + `
-"TlRfSUQpLCBOT1QgaW4gTWljcm9zb2Z0J3Mgc2hhcmVkIEJvdCBGcmFtZXdvcmsKICAgICMgdGVu" + `
-"YW50IChNaWNyb3NvZnRTZXJ2aWNlcy5vbm1pY3Jvc29mdC51cykuICBVc2luZyB0aGUgd3Jvbmcg" + `
-"dGVuYW50IGhlcmUKICAgICMgY2F1c2VzIHRoZSBjb25uZWN0b3IgY2xpZW50IHRvIGdldCBhIHRv" + `
-"a2VuIHRoYXQgdGhlIEdDQyBzZXJ2aWNlVXJsIHJlamVjdHMKICAgICMgd2l0aCA0MDEgVW5hdXRo" + `
-"b3JpemVkLiAgRmFsbCBiYWNrIHRvIHRoZSBzaGFyZWQgdGVuYW50IG9ubHkgaWYgbm8gdGVuYW50" + `
-"CiAgICAjIElEIGlzIGNvbmZpZ3VyZWQgKHB1cmUgbXVsdGktdGVuYW50IGJvdHMpLgogICAgVE9f" + `
-"Q0hBTk5FTF9GUk9NX0JPVF9MT0dJTl9VUkwgPSAoCiAgICAgICAgImh0dHBzOi8vbG9naW4ubWlj" + `
-"cm9zb2Z0b25saW5lLnVzLyIKICAgICAgICArIChBUFBfVEVOQU5UX0lEIG9yICJNaWNyb3NvZnRT" + `
-"ZXJ2aWNlcy5vbm1pY3Jvc29mdC51cyIpCiAgICApCgogICAgIyBPdXRib3VuZDogT0F1dGggc2Nv" + `
-"cGUgZm9yIGJvdC10by1jaGFubmVsIGF1dGgKICAgIFRPX0NIQU5ORUxfRlJPTV9CT1RfT0FVVEhf" + `
-"U0NPUEUgPSAiaHR0cHM6Ly9hcGkuYm90ZnJhbWV3b3JrLmF6dXJlLnVzIgoKICAgICMgQ2hhbm5l" + `
-"bCBzZXJ2aWNlIGZsYWcg4oCUIHNpZ25hbHMgR0NDIHRvIHRoZSBTREsKICAgIENIQU5ORUxfU0VS" + `
-"VklDRSA9ICJodHRwczovL2JvdGZyYW1ld29yay5henVyZS51cyIKCiAgICAjIE9BdXRoIGVuZHBv" + `
-"aW50IGZvciBPQXV0aENhcmQgLyBzaWduLWluIGZsb3dzCiAgICBPQVVUSF9VUkwgPSAiaHR0cHM6" + `
-"Ly90b2tlbmdjY2guYm90ZnJhbWV3b3JrLmF6dXJlLnVzLyIKCiAgICBWQUxJREFURV9BVVRIT1JJ" + `
-"VFkgPSBUcnVlCgoKQk9UX0FVVEggPSBDb25maWd1cmF0aW9uQm90RnJhbWV3b3JrQXV0aGVudGlj" + `
-"YXRpb24oX0dDQ0NvbmZpZykKQURBUFRFUiA9IENsb3VkQWRhcHRlcihCT1RfQVVUSCkKCmxvZ2dl" + `
-"ci5pbmZvKCJDbG91ZEFkYXB0ZXIgaW5pdGlhbGlzZWQgd2l0aCBHQ0MgY29uZmlndXJhdGlvbi4i" + `
-"KQpsb2dnZXIuaW5mbygKICAgICJUb2tlbiBpc3N1ZXIgZXhwZWN0ZWQ6ICVzIiwKICAgIF9HQ0ND" + `
-"b25maWcuVE9fQk9UX0ZST01fQ0hBTk5FTF9UT0tFTl9JU1NVRVIsCikKbG9nZ2VyLmluZm8oCiAg" + `
-"ICAiT3V0Ym91bmQgbG9naW4gVVJMICA6ICVzIiwKICAgIF9HQ0NDb25maWcuVE9fQ0hBTk5FTF9G" + `
-"Uk9NX0JPVF9MT0dJTl9VUkwsCikKCgojIEVycm9yIGhhbmRsZXIKYXN5bmMgZGVmIG9uX2Vycm9y" + `
-"KGNvbnRleHQsIGVycm9yKToKICAgIGxvZ2dlci5lcnJvcigiQm90IGVycm9yOiAlcyIsIGVycm9y" + `
-"LCBleGNfaW5mbz1UcnVlKQogICAgYXdhaXQgY29udGV4dC5zZW5kX2FjdGl2aXR5KCJTb3JyeSwg" + `
-"c29tZXRoaW5nIHdlbnQgd3JvbmcuIikKCkFEQVBURVIub25fdHVybl9lcnJvciA9IG9uX2Vycm9y" + `
-"CgojIENyZWF0ZSBib3QKQk9UID0gSVRTTVRlYW1zQm90KCkKCgphc3luYyBkZWYgbWVzc2FnZXMo" + `
-"cmVxOiBSZXF1ZXN0KSAtPiBSZXNwb25zZToKICAgICIiIkhhbmRsZSBpbmNvbWluZyBtZXNzYWdl" + `
-"cyBmcm9tIFRlYW1zIiiiCiAgICBsb2dnZXIuaW5mbygiUmVjZWl2ZWQgcmVxdWVzdCB0byAvYXBp" + `
-"L21lc3NhZ2VzIikKCiAgICAjIFZlcmlmeSBjb250ZW50IHR5cGUKICAgIGlmICJhcHBsaWNhdGlv" + `
-"bi9qc29uIiBub3QgaW4gcmVxLmhlYWRlcnMuZ2V0KCJDb250ZW50LVR5cGUiLCAiIik6CiAgICAg" + `
-"ICAgbG9nZ2VyLmVycm9yKCJJbnZhbGlkIGNvbnRlbnQgdHlwZSIpCiAgICAgICAgcmV0dXJuIFJl" + `
-"c3BvbnNlKHN0YXR1cz00MTUsIHRleHQ9IkNvbnRlbnQtVHlwZSBtdXN0IGJlIGFwcGxpY2F0aW9u" + `
-"L2pzb24iKQoKICAgIHRyeToKICAgICAgICAjIFBhcnNlIHJlcXVlc3QgYm9keQogICAgICAgIGJv" + `
-"ZHkgPSBhd2FpdCByZXEuanNvbigpCiAgICAgICAgYWN0aXZpdHkgPSBBY3Rpdml0eSgpLmRlc2Vy" + `
-"aWFsaXplKGJvZHkpCgogICAgICAgICMgR2V0IGF1dGggaGVhZGVyCiAgICAgICAgYXV0aF9oZWFk" + `
-"ZXIgPSByZXEuaGVhZGVycy5nZXQoIkF1dGhvcml6YXRpb24iLCAiIikKCiAgICAgICAgIyBDbG91" + `
-"ZEFkYXB0ZXI6IGF1dGhfaGVhZGVyIGNvbWVzIEZJUlNULCB0aGVuIGFjdGl2aXR5CiAgICAgICAg" + `
-"cmVzcG9uc2UgPSBhd2FpdCBBREFQVEVSLnByb2Nlc3NfYWN0aXZpdHkoYXV0aF9oZWFkZXIsIGFj" + `
-"dGl2aXR5LCBCT1Qub25fdHVybikKCiAgICAgICAgaWYgcmVzcG9uc2U6CiAgICAgICAgICAgIHJl" + `
-"dHVybiBSZXNwb25zZShzdGF0dXM9cmVzcG9uc2Uuc3RhdHVzLCB0ZXh0PXJlc3BvbnNlLmJvZHkp" + `
-"CiAgICAgICAgcmV0dXJuIFJlc3BvbnNlKHN0YXR1cz0yMDEpCgogICAgZXhjZXB0IEV4Y2VwdGlv" + `
-"biBhcyBleGNlcHRpb246CiAgICAgICAgbG9nZ2VyLmVycm9yKCJFcnJvciBwcm9jZXNzaW5nIHJl" + `
-"cXVlc3Q6ICVzIiwgZXhjZXB0aW9uLCBleGNfaW5mbz1UcnVlKQogICAgICAgIHJldHVybiBSZXNw" + `
-"b25zZShzdGF0dXM9NTAwLCB0ZXh0PXN0cihleGNlcHRpb24pKQoKCmFzeW5jIGRlZiBoZWFsdGhf" + `
-"Y2hlY2socmVxOiBSZXF1ZXN0KSAtPiBSZXNwb25zZToKICAgICIiIkhlYWx0aCBjaGVjayBlbmRw" + `
-"b2ludCIiIgogICAgcmV0dXJuIFJlc3BvbnNlKHRleHQ9IkJvdCBpcyBydW5uaW5nIiwgc3RhdHVz" + `
-"PTIwMCkKCgojIENyZWF0ZSB3ZWIgYXBwCkFQUCA9IHdlYi5BcHBsaWNhdGlvbigpCkFQUC5yb3V0" + `
-"ZXIuYWRkX3Bvc3QoIi9hcGkvbWVzc2FnZXMiLCBtZXNzYWdlcykKQVBQLnJvdXRlci5hZGRfZ2V0" + `
-"KCIvaGVhbHRoIiwgaGVhbHRoX2NoZWNrKQpBUFAucm91dGVyLmFkZF9nZXQoIi8iLCBoZWFsdGhf" + `
-"Y2hlY2spCgoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIHRyeToKICAgICAgICBsb2dn" + `
-"ZXIuaW5mbygiPSIgKiA3MCkKICAgICAgICBsb2dnZXIuaW5mbygiU3RhcnRpbmcgSVRTTSBUZWFt" + `
-"cyBCb3QgU2VydmVyIChHQ0MpIikKICAgICAgICBsb2dnZXIuaW5mbygiPSIgKiA3MCkKICAgICAg" + `
-"ICBsb2dnZXIuaW5mbygiUG9ydDogJXMiLCBQT1JUKQogICAgICAgIGxvZ2dlci5pbmZvKCJFbmRw" + `
-"b2ludDogaHR0cDovLzAuMC4wLjA6JXMvYXBpL21lc3NhZ2VzIiwgUE9SVCkKICAgICAgICBsb2dn" + `
-"ZXIuaW5mbygiPSIgKiA3MCkKCiAgICAgICAgd2ViLnJ1bl9hcHAoQVBQLCBob3N0PSIwLjAuMC4w" + `
-"IiwgcG9ydD1QT1JUKQoKICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZXJyb3I6CiAgICAgICAgbG9n" + `
-"Z2VyLmVycm9yKCJGYWlsZWQgdG8gc3RhcnQgc2VydmVyOiAlcyIsIGVycm9yLCBleGNfaW5mbz1U" + `
-"cnVlKQogICAgICAgIHJhaXNlCg=="
+"""
+Run this script from the project root to write the correct src/teams_server.py.
+Usage:  python fix_teams_server.py
+"""
+import os, ast
 
-Set-Content -Path "srv_b64.txt" -Value $b64 -Encoding ascii
+CONTENT = '''\
+"""
+Web server for Microsoft Teams Bot (Azure Government / GCC)
+"""
+
+from aiohttp import web
+from aiohttp.web import Request, Response
+from botbuilder.integration.aiohttp import CloudAdapter, ConfigurationBotFrameworkAuthentication
+from botbuilder.schema import Activity
+from teams_bot import ITSMTeamsBot
+import os
+import sys
+from dotenv import load_dotenv
+import logging
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format=\'%(asctime)s - %(name)s - %(levelname)s - %(message)s\'
+)
+logger = logging.getLogger(__name__)
+
+# Load environment variables
+load_dotenv()
+
+# Bot Framework settings
+APP_ID = os.getenv("MICROSOFT_APP_ID")
+APP_PASSWORD = os.getenv("MICROSOFT_APP_PASSWORD")
+BOT_TYPE = os.getenv("BOT_TYPE", "").strip()
+APP_MSI_RESOURCE_ID = os.getenv("APP_MSI_RESOURCE_ID")
+APP_TENANT_ID = os.getenv("APP_TENANT_ID", "").strip()
+PORT = int(os.getenv("PORT", "3978"))
+
+using_managed_identity = BOT_TYPE.lower() in {
+    "user-assigned managed identity",
+    "userassignedmanagedidentity",
+    "user-assigned",
+    "managedidentity",
+    "managed-identity",
+}
+
+if not APP_ID:
+    logger.error("MICROSOFT_APP_ID must be set in .env file")
+    print("\\nERROR: Missing Teams bot credentials!")
+    print("Please add to your .env file:")
+    print("MICROSOFT_APP_ID=your-app-id")
+    if not using_managed_identity:
+        print("MICROSOFT_APP_PASSWORD=your-app-secret")
+    print("\\nSee TEAMS_DEPLOYMENT.md for instructions on getting these credentials.")
+    sys.exit(1)
+
+logger.info("Bot App ID loaded from environment.")
+
+if using_managed_identity:
+    logger.info("Bot type: User-Assigned Managed Identity (no app password expected).")
+    if APP_MSI_RESOURCE_ID:
+        logger.info("App MSI Resource ID configured.")
+else:
+    if not APP_PASSWORD:
+        logger.error("MICROSOFT_APP_PASSWORD must be set for non-managed identity bots.")
+        print("\\nERROR: Missing Teams bot secret!")
+        print("Please add to your .env file:")
+        print("MICROSOFT_APP_PASSWORD=your-app-secret")
+        sys.exit(1)
+
+if not APP_TENANT_ID:
+    logger.warning(
+        "APP_TENANT_ID not set. Single Tenant GCC bots must set this "
+        "to the Azure AD tenant ID shown in Azure Bot Configuration."
+    )
+else:
+    logger.info("Bot tenant ID: %s", APP_TENANT_ID)
 
 
-python -c "import base64; open('src/teams_server.py','wb').write(base64.b64decode(open('srv_b64.txt').read().strip()))"
+# ---------------------------------------------------------------------------
+# GCC (Azure Government / Single Tenant) authentication configuration.
+#
+# ConfigurationBotFrameworkAuthentication reads a plain config object whose
+# attributes tell the SDK which GCC endpoints to use for:
+#   - Outbound bot credentials  (TO_CHANNEL_FROM_BOT_*)
+#   - Inbound token validation  (TO_BOT_FROM_CHANNEL_*)
+#
+# Critical for Single Tenant GCC:
+#   TO_BOT_FROM_CHANNEL_TOKEN_ISSUER must match the actual "iss" claim in the
+#   JWT that Teams sends.  For Single Tenant GCC (msaAppType = SingleTenant)
+#   Teams signs tokens with  https://sts.windows.net/{tenant-id}/
+#   NOT with  https://api.botframework.us  (that is the multi-tenant issuer).
+# ---------------------------------------------------------------------------
+class _GCCConfig:
+    APP_ID = APP_ID
+    APP_PASSWORD = APP_PASSWORD
+    APP_TYPE = "SingleTenant"
+    APP_TENANTID = APP_TENANT_ID
+
+    # Inbound: which OpenID metadata URL to fetch signing keys from
+    TO_BOT_FROM_CHANNEL_OPENID_METADATA_URL = (
+        "https://login.botframework.azure.us/v1/.well-known/openidconfiguration"
+    )
+
+    # Inbound: expected token issuer from Teams Government (Single Tenant)
+    TO_BOT_FROM_CHANNEL_TOKEN_ISSUER = (
+        "https://sts.windows.net/" + (APP_TENANT_ID or "") + "/"
+    )
+
+    # Inbound: emulator OpenID metadata (GCC emulator endpoint)
+    TO_BOT_FROM_EMULATOR_OPENID_METADATA_URL = (
+        "https://login.microsoftonline.us/"
+        "cab8a31a-1906-4287-a0d8-4eef66b95f6e/v2.0/.well-known/openid-configuration"
+    )
+
+    # Outbound: login URL for bot-to-channel auth (Azure Government).
+    # SingleTenant GCC: the bot\'s App Registration lives in the customer\'s
+    # government tenant (APP_TENANT_ID), NOT in Microsoft\'s shared Bot Framework
+    # tenant (MicrosoftServices.onmicrosoft.us).  Using the wrong tenant here
+    # causes the connector client to get a token that the GCC serviceUrl rejects
+    # with 401 Unauthorized.  Fall back to the shared tenant only if no tenant
+    # ID is configured (pure multi-tenant bots).
+    TO_CHANNEL_FROM_BOT_LOGIN_URL = (
+        "https://login.microsoftonline.us/"
+        + (APP_TENANT_ID or "MicrosoftServices.onmicrosoft.us")
+    )
+
+    # Outbound: OAuth scope for bot-to-channel auth
+    TO_CHANNEL_FROM_BOT_OAUTH_SCOPE = "https://api.botframework.azure.us"
+
+    # Channel service flag -- signals GCC to the SDK
+    CHANNEL_SERVICE = "https://botframework.azure.us"
+
+    # OAuth endpoint for OAuthCard / sign-in flows
+    OAUTH_URL = "https://tokengcch.botframework.azure.us/"
+
+    VALIDATE_AUTHORITY = True
 
 
+BOT_AUTH = ConfigurationBotFrameworkAuthentication(_GCCConfig)
+ADAPTER = CloudAdapter(BOT_AUTH)
 
-Select-String -Path "src\teams_server.py" -Pattern "TO_CHANNEL_FROM_BOT_LOGIN_URL"
-Remove-Item "srv_b64.txt" -ErrorAction SilentlyContinue
+logger.info("CloudAdapter initialised with GCC configuration.")
+logger.info(
+    "Token issuer expected: %s",
+    _GCCConfig.TO_BOT_FROM_CHANNEL_TOKEN_ISSUER,
+)
+logger.info(
+    "Outbound login URL  : %s",
+    _GCCConfig.TO_CHANNEL_FROM_BOT_LOGIN_URL,
+)
+
+
+# Error handler
+async def on_error(context, error):
+    logger.error("Bot error: %s", error, exc_info=True)
+    await context.send_activity("Sorry, something went wrong.")
+
+ADAPTER.on_turn_error = on_error
+
+# Create bot
+BOT = ITSMTeamsBot()
+
+
+async def messages(req: Request) -> Response:
+    """Handle incoming messages from Teams"""
+    logger.info("Received request to /api/messages")
+
+    # Verify content type
+    if "application/json" not in req.headers.get("Content-Type", ""):
+        logger.error("Invalid content type")
+        return Response(status=415, text="Content-Type must be application/json")
+
+    try:
+        # Parse request body
+        body = await req.json()
+        activity = Activity().deserialize(body)
+
+        # Get auth header
+        auth_header = req.headers.get("Authorization", "")
+
+        # CloudAdapter: auth_header comes FIRST, then activity
+        response = await ADAPTER.process_activity(auth_header, activity, BOT.on_turn)
+
+        if response:
+            return Response(status=response.status, text=response.body)
+        return Response(status=201)
+
+    except Exception as exception:
+        logger.error("Error processing request: %s", exception, exc_info=True)
+        return Response(status=500, text=str(exception))
+
+
+async def health_check(req: Request) -> Response:
+    """Health check endpoint"""
+    return Response(text="Bot is running", status=200)
+
+
+# Create web app
+APP = web.Application()
+APP.router.add_post("/api/messages", messages)
+APP.router.add_get("/health", health_check)
+APP.router.add_get("/", health_check)
+
+
+if __name__ == "__main__":
+    try:
+        logger.info("=" * 70)
+        logger.info("Starting ITSM Teams Bot Server (GCC)")
+        logger.info("=" * 70)
+        logger.info("Port: %s", PORT)
+        logger.info("Endpoint: http://0.0.0.0:%s/api/messages", PORT)
+        logger.info("=" * 70)
+
+        web.run_app(APP, host="0.0.0.0", port=PORT)
+
+    except Exception as error:
+        logger.error("Failed to start server: %s", error, exc_info=True)
+        raise
+'''
+
+out = os.path.join("src", "teams_server.py")
+os.makedirs("src", exist_ok=True)
+with open(out, "w", encoding="utf-8") as fh:
+    fh.write(CONTENT)
+print("Written:", os.path.abspath(out))
+
+# Syntax check
+try:
+    ast.parse(CONTENT)
+    print("Syntax OK")
+except SyntaxError as e:
+    print("SYNTAX ERROR:", e)
+
+python fix_teams_server.py

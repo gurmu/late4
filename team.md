@@ -128,8 +128,17 @@ $b64 = "IiIiCldlYiBzZXJ2ZXIgZm9yIE1pY3Jvc29mdCBUZWFtcyBCb3QgKEF6dXJlIEdvdmVybm1l
 "Z2VyLmVycm9yKCJGYWlsZWQgdG8gc3RhcnQgc2VydmVyOiAlcyIsIGVycm9yLCBleGNfaW5mbz1U" + `
 "cnVlKQogICAgICAgIHJhaXNlCg=="
 
-# Decode to the source location on this machine
-[System.Convert]::FromBase64String($b64) | Set-Content -Path "src\teams_server.py" -Encoding Byte
-Write-Host "Decoded OK — verifying..."
+Set-Content -Path "$env:TEMP\srv.b64" -Value $b64 -Encoding ascii
+
+
+
+certutil -decode "$env:TEMP\srv.b64" "src\teams_server.py"
+Remove-Item "$env:TEMP\srv.b64" -ErrorAction SilentlyContinue
+
+
 Select-String -Path "src\teams_server.py" -Pattern "TO_CHANNEL_FROM_BOT_LOGIN_URL"
+
+$ACR = "chitsm2"
+az acr build --registry $ACR --image "teams-bot:latest" -f Dockerfile .
+az webapp restart --name rdg-chat --resource-group rg-itsm-multiagent-dev
 
